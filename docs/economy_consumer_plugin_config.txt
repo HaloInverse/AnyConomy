@@ -5,7 +5,7 @@ Based on sample code provided by Nijikokun.
 
 /************************************************************/
 import com.haloinverse.AnyConomy.*;
-import com.haloinverse.AnyConomy.Errors.*;
+import com.haloinverse.AnyConomy.Exceptions.*;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event;
 import org.bukkit.event.server.PluginEvent;
@@ -31,6 +31,17 @@ public class MyPlugin extends JavaPlugin {
                 MyPlugin.anyConomy = (AnyConomy)event.getPlugin();
                 log.info("[MyPlugin] Attached to AnyConomy.");
             }
+        }
+    }
+    
+    @Override
+    public void onEnable()
+    {
+        // This catches plugins enabled BEFORE MyPlugin is enabled.
+        Plugin test = getServer().getPluginManager().getPlugin("AnyConomy");
+        if (test != null) {
+            MyPlugin.anyConomyPluginRef = (AnyConomy)test;
+            log.info("[MyPlugin] Attached to AnyConomy.");
         }
     }
 

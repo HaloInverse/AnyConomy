@@ -1,11 +1,12 @@
 To add AnyConomy support to an economy plugin, merge the following to your plugin's main class.
 Rename class labels (MyPlugin, MyEconListener, Listener, etc.) as appropriate.
 Leave your existing economy API intact, for any plugins that want to call your economy plugin's methods directly.
+    (They can use the methods getEconomyName() and getEconomyVersion() to determine if they recognize your economy.)
 
 Based on sample code provided by Nijikokun.
 
 import com.haloinverse.AnyConomy.*;
-import com.haloinverse.AnyConomy.Errors.*;
+import com.haloinverse.AnyConomy.Exceptions.*;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event;
 import org.bukkit.event.server.PluginEvent;
@@ -17,13 +18,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class MyPlugin extends JavaPlugin {
 
-    private static AnyConomy anyConomyPluginRef;
+    private static AnyConomy anyConomyPluginRef = null;
     protected static MyEconListener myEconListener;
     
     private Listener listener = new Listener();
 
     private class MyEconListener implements GenericEconomy
-    // Optionally, this can be in a separate class file.
+    // Optionally, this can (and probably should) be in a separate class file.
     {
         // Implement the methods of GenericEconomy here, passing calls to your main plugin code.
         // Handle thrown errors gracefully, and throw errors from com.haloinverse.AnyConomy.Errors.* as needed.
@@ -35,11 +36,32 @@ public class MyPlugin extends JavaPlugin {
 
         @Override
         public void onPluginEnabled(PluginEvent event) {
+            // This catches plugins enabled AFTER MyPlugin is enabled.
             if(event.getPlugin().getDescription().getName().equals("AnyConomy")) {
                 MyPlugin.anyConomyPlugin = (AnyConomy)event.getPlugin();
-                anyConomyPlugin.registerEconomy(myEconListener);
-                log.info("[MyPlugin] Registered with AnyConomy.");
+                MyPlugin.registerAnyConomy(MyPlugin.anyConomyPlugin, MyPlugin.myEconListener);
             }
+        }
+    }
+    
+    @Override
+    public void onEnable()
+    {
+        // This catches plugins enabled BEFORE MyPlugin is enabled.
+        Plugin test = getServer().getPluginManager().getPlugin("AnyConomy");
+        if (test != null) {
+            anyConomyPluginRef = (AnyConomy)test;
+            registerAnyConomy(anyConomyPluginRef, myEconListener);
+        }
+    }
+    
+    public void registerAnyConomy(AnyConomy anyConomyPlugin, MyEconListener econListener)
+    {
+        try {
+            anyConomyPlugin.registerEconomy(econListener);
+            log.info("[MyPlugin] Registered with AnyConomy.");
+        } catch (EconAlreadyRegisteredException ex) {
+            log.warning("[MyPlugin] Failed to register with AnyConomy: Another economy already registered.");
         }
     }
 
