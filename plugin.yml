@@ -1,0 +1,5 @@
+name: AnyConomy
+main: com.haloinverse.AnyConomy.AnyConomy
+version: 0.1
+author: HaloInverse
+description: A generic economy-plugin interface.

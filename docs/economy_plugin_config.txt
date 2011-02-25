@@ -1,0 +1,49 @@
+To add AnyConomy support to an economy plugin, merge the following to your plugin's main class.
+Rename class labels (MyPlugin, MyEconListener, Listener, etc.) as appropriate.
+Leave your existing economy API intact, for any plugins that want to call your economy plugin's methods directly.
+
+Based on sample code provided by Nijikokun.
+
+import com.haloinverse.AnyConomy.*;
+import com.haloinverse.AnyConomy.Errors.*;
+import org.bukkit.event.Event.Priority;
+import org.bukkit.event.Event;
+import org.bukkit.event.server.PluginEvent;
+import org.bukkit.event.server.ServerListener;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.PluginLoader;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class MyPlugin extends JavaPlugin {
+
+    private static AnyConomy anyConomyPluginRef;
+    protected static MyEconListener myEconListener;
+    
+    private Listener listener = new Listener();
+
+    private class MyEconListener implements GenericEconomy
+    // Optionally, this can be in a separate class file.
+    {
+        // Implement the methods of GenericEconomy here, passing calls to your main plugin code.
+        // Handle thrown errors gracefully, and throw errors from com.haloinverse.AnyConomy.Errors.* as needed.
+    }
+
+    private class Listener extends ServerListener {
+    // Optionally, this can be in a separate class file.
+        public Listener() { }
+
+        @Override
+        public void onPluginEnabled(PluginEvent event) {
+            if(event.getPlugin().getDescription().getName().equals("AnyConomy")) {
+                MyPlugin.anyConomyPlugin = (AnyConomy)event.getPlugin();
+                anyConomyPlugin.registerEconomy(myEconListener);
+                log.info("[MyPlugin] Registered with AnyConomy.");
+            }
+        }
+    }
+
+    private void registerEvents() {
+        this.getServer().getPluginManager().registerEvent(Event.Type.PLUGIN_ENABLE, listener, Priority.Monitor, this);
+    }
+}

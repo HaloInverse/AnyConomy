@@ -1,0 +1,68 @@
+To add AnyConomy support to a plugin needing to call other economies, merge the following into your plugin's main class.
+Rename class labels (MyPlugin, MyEconListener, Listener, etc.) as appropriate.
+
+Based on sample code provided by Nijikokun.
+
+/************************************************************/
+import com.haloinverse.AnyConomy.*;
+import com.haloinverse.AnyConomy.Errors.*;
+import org.bukkit.event.Event.Priority;
+import org.bukkit.event.Event;
+import org.bukkit.event.server.PluginEvent;
+import org.bukkit.event.server.ServerListener;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.PluginLoader;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class MyPlugin extends JavaPlugin {
+
+    private static AnyConomy anyConomy;
+    
+    private Listener listener = new Listener();
+
+    private class Listener extends ServerListener {
+    // Optionally, this can be in a separate class file.
+        public Listener() { }
+
+        @Override
+        public void onPluginEnabled(PluginEvent event) {
+            if(event.getPlugin().getDescription().getName().equals("AnyConomy")) {
+                MyPlugin.anyConomy = (AnyConomy)event.getPlugin();
+                log.info("[MyPlugin] Attached to AnyConomy.");
+            }
+        }
+    }
+
+    private void registerEvents() {
+        this.getServer().getPluginManager().registerEvent(Event.Type.PLUGIN_ENABLE, listener, Priority.Monitor, this);
+    }
+}
+/************************************************************/
+
+Once this is finished, in any class making economy calls, use something like the following:
+
+/************************************************************/
+import com.haloinverse.AnyConomy.AnyConomy;
+import com.haloinverse.AnyConomy.Errors.*;
+
+<class declaration>
+    <method declaration>
+        AnyConomy econ = MyPlugin.anyConomy;
+        <code>
+        <code>
+        try
+        {
+            if (econ.getAccountExists(playerName))
+            {
+                myInt = econ.getBalance(playerName);
+                <code>
+                econ.addBalance(playerName, intFundsToAdd); 
+            }
+        } catch (NoEconRegisteredException|InternalEconException ex) {
+            <code to exit neatly>
+        } catch (InvalidTransactionException) {
+            <complain at the user for trying to do something disallowed>
+        }
+        <code>
+    <more methods, etc.>
