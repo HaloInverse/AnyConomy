@@ -109,7 +109,7 @@ public class AnyConomy extends JavaPlugin {
 		return econPlugin.getBalance(accountName, decimals);
 	}
 	
-	public long addBalance(String accountName, long fundsToAdd)
+	public void addBalance(String accountName, long fundsToAdd)
 		throws	InternalEconException,
 				NoAccountException,
 				NoEconRegisteredException,
@@ -118,10 +118,10 @@ public class AnyConomy extends JavaPlugin {
 		// Adds the given amount to the account (subtracts if negative).
 	{
 		checkEcon();
-		return econPlugin.addBalance(accountName, fundsToAdd);
+		econPlugin.addBalance(accountName, fundsToAdd);
 	}
 	
-	public long addBalance(String accountName, long fundsToAdd, int decimals)
+	public void addBalance(String accountName, long fundsToAdd, int decimals)
 		throws	InternalEconException,
 				NoAccountException,
 				InvalidTransactionException,
@@ -130,7 +130,7 @@ public class AnyConomy extends JavaPlugin {
 		// i.e. addBalance(<name>, 12345, 2) adds 123.45 to the account.
 	{
 		checkEcon();
-		return econPlugin.addBalance(accountName, fundsToAdd, decimals);
+		econPlugin.addBalance(accountName, fundsToAdd, decimals);
 	}
 	
 	// There is NO setBalance method. It's sort of like GOTO: a simple, easy-to-understand, bad idea.

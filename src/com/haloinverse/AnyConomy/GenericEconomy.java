@@ -36,14 +36,14 @@ public interface GenericEconomy {
 		// Returns the balance * 10^(<decimals>), rounded to the nearest integer.
 		// For example, if the actual balance is 123.456, getBalanceScaled(name, 2) returns 12347.
 	
-	public long addBalance(String accountName, long fundsToAdd)
+	public void addBalance(String accountName, long fundsToAdd)
 		throws	InternalEconException,
 				NoAccountException,
 				InvalidTransactionException;	// Thrown if the economy rejects that transaction
 												// (i.e. balance required to be >=0, below some cap, whatever.)
 		// Adds the given amount to the account (subtracts if negative).
 	
-	public long addBalance(String accountName, long fundsToAdd, int decimals)
+	public void addBalance(String accountName, long fundsToAdd, int decimals)
 		throws	InternalEconException,
 				NoAccountException,
 				InvalidTransactionException;

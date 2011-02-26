@@ -1,10 +1,19 @@
-To add AnyConomy support to a plugin needing to call other economies, merge the following into your plugin's main class.
-Rename class labels (MyPlugin, MyEconListener, Listener, etc.) as appropriate.
+Adding AnyConomy Support for Economy-Using Plugins
 
 Based on sample code provided by Nijikokun.
 
+First, you MUST INCLUDE the package com.haloinverse.AnyConomy.Exceptions, and all the classes in the package, into your plugin project.
+This is NOT the same thing as including it in the build path, in MANIFEST.MF, or as an external .jar.
+The package and the .java files it contains must be DIRECTLY inserted in your project.
+Otherwise, the Java classloader will be unable to parse "import com.haloinverse.AnyConomy.Exceptions.<excName>", and fail on loading.
+
+You should NOT include com.haloinverse.AnyConomy.AnyConomy into your project - referencing the external jar and importing declarations is fine.
+
+Then, merge the following into your plugin's main class.
+Rename class labels (MyPlugin, MyEconListener, Listener, etc.) as appropriate.
+
 /************************************************************/
-import com.haloinverse.AnyConomy.*;
+import com.haloinverse.AnyConomy.AnyConomy;
 import com.haloinverse.AnyConomy.Exceptions.*;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event;
@@ -55,7 +64,7 @@ Once this is finished, in any class making economy calls, use something like the
 
 /************************************************************/
 import com.haloinverse.AnyConomy.AnyConomy;
-import com.haloinverse.AnyConomy.Errors.*;
+import com.haloinverse.AnyConomy.Exceptions.*;
 
 <class declaration>
     <method declaration>

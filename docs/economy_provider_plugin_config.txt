@@ -20,6 +20,7 @@ public class MyPlugin extends JavaPlugin {
 
     private static AnyConomy anyConomyPluginRef = null;
     protected static MyEconListener myEconListener;
+    protected final Logger log = Logger.getLogger("Minecraft");
     
     private Listener listener = new Listener();
 
@@ -38,8 +39,8 @@ public class MyPlugin extends JavaPlugin {
         public void onPluginEnabled(PluginEvent event) {
             // This catches plugins enabled AFTER MyPlugin is enabled.
             if(event.getPlugin().getDescription().getName().equals("AnyConomy")) {
-                MyPlugin.anyConomyPlugin = (AnyConomy)event.getPlugin();
-                MyPlugin.registerAnyConomy(MyPlugin.anyConomyPlugin, MyPlugin.myEconListener);
+                MyPlugin.anyConomyPluginRef = (AnyConomy)event.getPlugin();
+                MyPlugin.registerAnyConomy(MyPlugin.anyConomyPluginRef, MyPlugin.myEconListener);
             }
         }
     }
@@ -53,6 +54,7 @@ public class MyPlugin extends JavaPlugin {
             anyConomyPluginRef = (AnyConomy)test;
             registerAnyConomy(anyConomyPluginRef, myEconListener);
         }
+        registerEvents();
     }
     
     public void registerAnyConomy(AnyConomy anyConomyPlugin, MyEconListener econListener)
