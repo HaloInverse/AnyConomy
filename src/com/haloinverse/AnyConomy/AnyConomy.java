@@ -11,11 +11,16 @@ public class AnyConomy extends JavaPlugin {
 
 	private GenericEconomy econPlugin = null;
 	protected final Logger log = Logger.getLogger("Minecraft");
-	private PluginDescriptionFile desc;
+	private PluginDescriptionFile desc = getDescription();
 	
 	public void registerEconomy(GenericEconomy thisEcon) throws EconAlreadyRegisteredException
 	{
 		// Economy plugins should call this method on initialization, with a listener object which implements GenericEconomy.
+		if (thisEcon == null)
+		{
+			log.warning("[" + desc.getName() + "] Null economy listener registration attempted!");
+			return;
+		}
 		if (econPlugin == thisEcon)
 			return;	// it's OK to re-register the same object
 		if (econPlugin != null)
@@ -24,7 +29,7 @@ public class AnyConomy extends JavaPlugin {
 			throw new EconAlreadyRegisteredException();
 		}
 		econPlugin = thisEcon;
-		log.info("[" + desc.getName() + "] Economy plugin registered: " + econPlugin.getEconomyName());
+		log.info("[AnyConomy] Economy plugin registered: " + econPlugin.getEconomyName());
 	}
 	
 	@Override
